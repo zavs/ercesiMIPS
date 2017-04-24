@@ -1,4 +1,4 @@
-About The ercesiMIPS Processor Porject
+ercesiMIPS Processor Porject
 ====================================
 
 Author: Meng Zhang (zhangm@nwpu.edu.cn)
