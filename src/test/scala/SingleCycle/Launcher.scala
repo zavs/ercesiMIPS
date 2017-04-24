@@ -21,7 +21,7 @@ object Launcher {
       Driver(() => new ALU(), backendName) {
         (c) => new ALUTests(c)
       }
-    },
+    }/*,
 
     "ALU11" -> { (backendName: String) =>
       Driver(() => new ALU11(), backendName) {
@@ -32,7 +32,7 @@ object Launcher {
       Driver(() => new Top(), backendName) {
         (c) => new TopTests(c)
       }
-    }
+    }*/
   )
 
   def main(args: Array[String]): Unit = {

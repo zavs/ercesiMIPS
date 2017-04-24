@@ -67,50 +67,50 @@ class ALUTests(c: ALU) extends PeekPokeTester(c) {
 	}
 }
 
-class ALU11Tests(c: ALU11) extends PeekPokeTester(c) {
-	var taluout = 0
-	var tcmpout = 0
-	var getALUout = 0
+// class ALU11Tests(c: ALU11) extends PeekPokeTester(c) {
+// 	var taluout = 0
+// 	var tcmpout = 0
+// 	var getALUout = 0
 
-	def asUInt(InInt: Int) = (BigInt(InInt >>> 1) << 1) + (InInt & 1)
+// 	def asUInt(InInt: Int) = (BigInt(InInt >>> 1) << 1) + (InInt & 1)
 
-	for (i <- 0 until 40){
-		val tin1 = rnd.nextInt(10000000)
-		val tin2 = rnd.nextInt(10000000)
-		//val taluctr = rnd.nextInt(7)
-		val taluctr = 0
-		poke(c.io.in1, tin1)
-		poke(c.io.in2, tin2)
-		poke(c.io.ALUctr, taluctr)
+// 	for (i <- 0 until 40){
+// 		val tin1 = rnd.nextInt(10000000)
+// 		val tin2 = rnd.nextInt(10000000)
+// 		//val taluctr = rnd.nextInt(7)
+// 		val taluctr = 0
+// 		poke(c.io.in1, tin1)
+// 		poke(c.io.in2, tin2)
+// 		poke(c.io.ALUctr, taluctr)
 
-		step(1)
+// 		step(1)
 
-		if(taluctr == 0){
-			taluout = tin1 & tin2
-			tcmpout = 0 
-		}else if(taluctr == 1){
-			taluout = tin1 | tin2
-			tcmpout = 0 
-		}else if(taluctr == 2){
-			taluout = tin1 + tin2
-			tcmpout = 0
-		}else if(taluctr == 6){
-			taluout = tin1 - tin2
-			tcmpout = if(tin1 == tin2) 1 else 0
-		}else if(taluctr == 7){
-			taluout = 0
-			tcmpout = if(tin1 < tin2) 1 else 0
-		}else {
-			taluout = 0
-			tcmpout = if(tin1 < tin2) 1 else 0
-		}
+// 		if(taluctr == 0){
+// 			taluout = tin1 & tin2
+// 			tcmpout = 0 
+// 		}else if(taluctr == 1){
+// 			taluout = tin1 | tin2
+// 			tcmpout = 0 
+// 		}else if(taluctr == 2){
+// 			taluout = tin1 + tin2
+// 			tcmpout = 0
+// 		}else if(taluctr == 6){
+// 			taluout = tin1 - tin2
+// 			tcmpout = if(tin1 == tin2) 1 else 0
+// 		}else if(taluctr == 7){
+// 			taluout = 0
+// 			tcmpout = if(tin1 < tin2) 1 else 0
+// 		}else {
+// 			taluout = 0
+// 			tcmpout = if(tin1 < tin2) 1 else 0
+// 		}
 
-		//getALUout = peek(c.io.ALUout)
-		if((taluctr == 6) & (tin1 < tin2)){
-			expect(c.io.ALUout, asUInt(taluout))
-		}else {
-			expect(c.io.ALUout, taluout)
-		}
-		expect(c.io.cmp_out, tcmpout)
-	}
-}
+// 		//getALUout = peek(c.io.ALUout)
+// 		if((taluctr == 6) & (tin1 < tin2)){
+// 			expect(c.io.ALUout, asUInt(taluout))
+// 		}else {
+// 			expect(c.io.ALUout, taluout)
+// 		}
+// 		expect(c.io.cmp_out, tcmpout)
+// 	}
+// }
