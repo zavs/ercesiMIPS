@@ -22,3 +22,20 @@ ercesiPROC处理器项目与实验计划说明
 * 第三级 “流水线处理器I”   （完成流水线结构支持的MIPS结构，可选：FPGA的实现，性能评价）预计4-5周完成
 * 第四级 “流水线处理器II” （根据现有生态（Ported Linux、MIPS gcc compiler）完成具有流水线支持的MIPS结构的性能优化，完成FPGA实现，可选：通用测试程序集性能评价）
 * 第五级 “流水线处理器III”   （可选：超标量处理器）可选内容。
+
+## 第一级 “我的第一个处理器”
+本实验推荐使用Chisel做为设计语言。本次实验已经提供了基本的结构描述以及测试描述Chisel模版，模版以一个简单ALU为例。请大家按照教学内容完成时实现对应指令的ALU结构，并设计单周期处理器的其他部分，可以将对应模块的测试程序放置在/src/test/scala/SingleCycle目录中。对应package name可根据设定实现。
+
+测试文件的关联是通过Launcher.scala实现的。
+```scala
+"ALU" -> { (backendName: String) =>
+      Driver(() => new ALU(), backendName) {
+        (c) => new ALUTests(c)
+      }
+    },
+```
+其中ALU是运行名称，建议与模块类ALU()名称一致。
+
+测试运行使用
+    `./run-single.sh ALU`
+即可执行ALU的测试文件。
