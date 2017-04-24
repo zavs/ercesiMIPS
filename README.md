@@ -13,7 +13,7 @@ Diagrams: [ercesiMIPS wiki](http://www.ercesi.org)
 
 This repo has been put together to demonstrate a number of simple MIPS Processors written in [Chisel](http://chisel.eecs.berkeley.edu).
 
-## Install Chisel (according to [usb-bar chisel3](https://github.com/ucb-bar/chisel3))
+### Install Chisel (according to [usb-bar chisel3](https://github.com/ucb-bar/chisel3))
 1) [Install sbt](http://www.scala-sbt.org/release/docs/Installing-sbt-on-Linux.html)
 Run the following from the terminal to install sbt in (Ubuntu-like) Linux.
 ```
@@ -47,8 +47,29 @@ make
 sudo make install
 ```
 
-3) Clone lab repository
+### Clone lab repository
 Run the following from the terminal to clone lab resources.
 ```
 git clone https://github.com/zavs/ercesiMIPS.git
 ```
+
+### Write your code and run it
+A template ALU block has been presented in `src/main/scala/SingleCycle/ALU.scala` with the tester in `src/test/scala/SingleCycle/ALUtests.scala`. We borrowed the Launcher method from [ucb-bar/chisel-tutorial](https://github.com/ucb-bar/chisel-tutorial).
+A new argument for shell runner needs to be name in `Launcher.scala` as the arguments of Map function:
+```scala
+object Launcher {
+  val tests = Map(
+    
+"ALU" -> { (backendName: String) =>
+      Driver(() => new ALU(), backendName) {
+        (c) => new ALUTests(c)
+      }
+    } ,
+"ALU11" -> { (backendName: String) =>
+      Driver(() => new ALU11(), backendName) {
+        (c) => new ALU11Tests(c)
+      }
+    }
+}
+```
+In which, `"ALU"` is the argument for the shell runner, and `ALU()` is denoted the instance class of DUT in `ALUTests(c)`. Just add new argument for you own block class.
