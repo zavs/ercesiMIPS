@@ -76,4 +76,16 @@ object Launcher {
 ```
 In which, `"ALU"` is the argument for the shell runner, and `ALU()` is denoted the instance class of DUT in `ALUTests(c)`. Just add new argument for you own block class.
 
+To test the ALU module with ALUtests, just input the following command in ercesiMIPS root directory.
+```
+./run-single.sh ALU
+```
+If you still want to monitor its verification via waveform, just run this:
+```
+./run-bak.v.sh ALU
+```
+And the output `.vcd` file can be monitored in `gtkwave` program which could be install in Ubuntu-like Linux:
+```
+sudo apt-get install gtkwave
+```
 
