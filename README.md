@@ -34,6 +34,7 @@ git clone http://git.veripool.org/git/verilator
 ```
 In the Verilator repository directory, check out a known good version:
 ```
+cd verilator
 git pull
 git checkout verilator_3_886
 ```
