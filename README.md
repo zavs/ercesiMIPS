@@ -32,7 +32,7 @@ Clone the Verilator repository：
 ```
 git clone http://git.veripool.org/git/verilator
 ```
-In the Verilator repository directory, check out a known good version:
+In the Verilator repository directory, check out a known good version (You can skip the step if the latest version is statable.):
 ```
 cd verilator
 git pull
