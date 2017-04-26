@@ -51,6 +51,7 @@ sudo make install
 ### Clone lab repository
 Run the following from the terminal to clone lab resources.
 ```
+cd ~/
 git clone https://github.com/zavs/ercesiMIPS.git
 ```
 
