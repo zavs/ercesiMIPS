@@ -16,6 +16,14 @@
 \usepackage{nameref}
 \usepackage[pdftex,dvipsnames]{xcolor}
 \usepackage{sectsty}
+\usepackage{multicol}
+\usepackage[procnames]{listings}
+
+\input{../style/scala.tex}
+
+\lstset{frame=, basicstyle={\footnotesize\ttfamily}}
+
+
 
 \graphicspath{ {images/} }
 \newcommand\tab[1][1cm]{\hspace*{#1}}
@@ -41,7 +49,9 @@
 \newcommandx{\commgreen}[2][1=]{\textcolor{OliveGreen}{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}}
 \newcommandx{\commpurp}[2][1=]{\textcolor{Plum}{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}}
 
+\def\code#1{{\tt #1}}
 
+\def\note#1{\noindent{\bf [Note: #1]}}
 %-----------------------------------------BEGIN DOC----------------------------------------
 
 \begin{document}
@@ -104,8 +114,97 @@ In Fig. \ref{fig:modules}, almost all signals can be renamed by your self except
 
 \newpage
 \section{Chisel3 101} \label{Datatypes}%------------------------------
-TBD
- 
+\subsection{Files, Directory and \code{package}}\label{sub:package}
+All designed files should contain \code{package} definition at the very beginning position for \code{sbt} interpreting.
+\begin{scala} 
+package SingleCycle
+\end{scala} 
+If the package name is re-defined by you own, please check all files to revise the package name.
+Theoretically,  the files with correct package definition could be placed anywhere of \code{src} directory. We preferred \code{src/main/scala/SingleCycle} for the design files and \code{src/test/scala/SingleCycle} for the tests files.
+
+\subsection{Define Ports}\label{sub:io}
+In single cycle ercesiMIPS project, bunches of singles connect Control Unit and Data Path Unit, which are only with different direction in different \textbf{Module}. Simply wrap the object in an \code{Input()} or \code{Output()} function. A example of \code{CtltoDatIo} is defined below.      
+\begin{scala}
+class CtltoDatIo extends Bundle()
+{
+	val nPC_MUX_sel = Output(Bool())
+	val RegWr		= Output(Bool())
+	val RegDst		= Output(Bool())
+	val ExtOp		= Output(Bool())
+	val ALUctr		= Output(UInt(2.W))
+	val ALUsrc		= Output(Bool())
+	val MemtoReg	= Output(Bool())
+	val Rd 			= Output(UInt(5.W))
+	val Rt 			= Output(UInt(5.W))
+	val Rs 			= Output(UInt(5.W))
+	val Imm16 		= Output(UInt(16.W))
+	val	Imm26		= Output(UInt(26.W))
+}
+\end{scala}
+To make the definition efficiently, the signals can be instanced in both modules, as shown below:
+\begin{multicols}{2}
+\begin{scala}
+class CPathIo extends Bundle()
+{
+	val Inst 		= Input(UInt(32.W))
+	val resetSignle = Input(Bool())
+	val MemWr		= Output(Bool())
+	val valid		= Output(Bool())
+	val ctl 		= new CtltoDatIo()
+	val dat 		= new DatToCtlIo().flip()
+}
+
+class CtlPath extends Module()
+{
+	val io 			= IO(new CPathIo ())
+	...
+}
+\end{scala}
+\columnbreak
+\begin{scala}
+class DatToCtlIo extends Bundle()
+{
+	val cmp_out = Output(Bool())
+}
+class DPathIo extends Bundle()
+{
+	//val host		= new HTIFIO()
+	val imem_addr	= Output(UInt(32.W))
+	val dmem_addr	= Output(UInt(32.W))
+	val dmem_datIn	= Output(UInt(32.W))
+	val dmem_datOut	= Input(UInt(32.W))
+	val ctl  		= new CtltoDatIo().flip()
+	val dat  		= new DatToCtlIo()
+}
+
+class DatPath extends Module {
+	val io = IO(new DPathIo ())
+	...
+}
+\end{scala}
+\end{multicols}
+
+In these examples, the connected IOs in different modules are instanced with \code{flip()}
+function for reversing its direction.
+\subsection{Define a Module} \label{sub:module}
+To object the hierarchical mechanism, modules defined in Chisel are described as a type of new \textbf{Module} class, shown as below.
+\begin{scala}
+class DatPath extends Module {
+	val io = IO(new DPathIo ())
+	// Internal Signal
+	val BusA 	= Wire(UInt(32.W))
+	val BusB 	= Wire(UInt(32.W))
+	......
+	......
+}
+\end{scala}
+In which, a user-defined Data Path module, with module name \code{DatPath}, is defined as a \textit{class} which:
+\begin{itemize}
+	\item inherits from Module,
+	\item contains an interface wrapped in an \code{IO()} function and stored in a port field named io, and
+	\item wires together subcircuits in its constructor.
+\end{itemize}
+
 %---------------------------------------Evalu Req------------------------------------------
 
 \newpage
