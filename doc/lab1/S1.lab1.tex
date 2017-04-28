@@ -209,10 +209,33 @@ In which, a user-defined Data Path module, with module name \code{DatPath}, is d
 
 \newpage
 \section{Evaluation Requirement} \label{sec:Functions}%------------------------------
+We (or TAs) will check and evaluate your design with a pre-coded test program, in which a pseudo-random instruction queue will be feed into you instruction memory and data memory. To ensure this test works correctly, the test signal interfaces name \textbf{MUST} meets the requirements shown in Table \ref{tab:signaldef}, and the logic operation of these interfaces \textbf{MUST} be design as  
 \subsection{Signal Requirement}\label{sub:signal}
-TBD
+
 %\url{}
-
-
+\begin{table}[h]
+\caption{Signals Definition for Test Mode}\label{tab:signaldef}
+\begin{center}
+	\begin{tabular}{|l|l|l|p{7cm}|}
+	\hline
+	Signal Name 	& Direction & Width & Function\\ \hline
+	boot			& Input 	& 1-bit	& Trigger the boot test mode, 
+									  set to 0 in CPU regular process mode\\ \hline
+	test\_im\_wr 	& Input	& 1-bit	& Instruction memory write enable in test mode,set to 0 in 	
+								  CPU regular process mode. In test mode, it will be set to 1 when if writing instructions to imem, otherwise it is set to 0.\\ \hline
+	test\_im\_re 	& Input & 1-bit & Instruction memory read enable in test mode,set to 0 in 	
+								  CPU regular process mode. In test mode, it will be set to 1 when if reading instructions out, otherwise it is set to 0. \\ \hline
+	test\_im\_in 	& Input & 32-bit& Instruction memory data input for test mode. \\ \hline
+	test\_im\_out 	& Output& 32-bit& Instruction memory data output for test mode. \\ \hline
+	test\_dm\_wr 	& Input	& 1-bit	& Data memory write enable in test mode,set to 0 in 	
+								  CPU regular process mode. In test mode, it will be set to 1 when if writing data to dmem, otherwise it is set to 0.\\ \hline
+	test\_dm\_re 	& Input & 1-bit & Data memory read enable in test mode,set to 0 in 	
+								  CPU regular process mode. In test mode, it will be set to 1 when if reading data out, otherwise it is set to 0.\\ \hline
+	test\_dm\_in 	& Input & 32-bit& Data memory input for test mode. \\ \hline
+	test\_dm\_out 	& Output& 32-bit& Data memory output for test mode. \\ \hline
+	\hline
+	\end{tabular}
+\end{center}
+\end{table}
 \end{document}
 
