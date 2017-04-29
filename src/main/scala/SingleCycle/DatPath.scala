@@ -15,7 +15,7 @@ import chisel3.util._
 //import utils.ercesiMIPSRunner
 class DatToCtlIo extends Bundle()
 {
-	val cmp_out = Output(Bool())
+	val zero = Output(Bool())
 	//val Imm32	= Output(UInt(32.W))
 	//val nPC_sel	= Output(Bool())
 }
