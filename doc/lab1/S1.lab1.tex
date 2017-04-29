@@ -1,24 +1,6 @@
 \documentclass[a4paper]{article}
 
-\usepackage[utf8x]{inputenc}
-\usepackage[british,UKenglish]{babel}
-\usepackage{amsmath}
-%\usepackage{titlesec}
-\usepackage{color}
-\usepackage{graphicx}
-\usepackage{fancyref}
-\usepackage{hyperref}
-\usepackage{float}
-\usepackage{scrextend}
-\usepackage{setspace}
-\usepackage{xargs}
-\usepackage{multicol}
-\usepackage{nameref}
-\usepackage[pdftex,dvipsnames]{xcolor}
-\usepackage{sectsty}
-\usepackage{multicol}
-\usepackage[procnames]{listings}
-
+\input{../style/common.tex}
 \input{../style/scala.tex}
 
 \lstset{frame=, basicstyle={\footnotesize\ttfamily}}
@@ -26,32 +8,7 @@
 
 
 \graphicspath{ {images/} }
-\newcommand\tab[1][1cm]{\hspace*{#1}}
-\hypersetup{colorlinks=true, linkcolor=black}
-\interfootnotelinepenalty=10000
-%\titleformat*{\subsubsection}{\large\bfseries}
-\subsubsectionfont{\large}
-\subsectionfont{\Large}
-\sectionfont{\LARGE}
-\definecolor{cleanOrange}{HTML}{D14D00}
-\definecolor{cleanYellow}{HTML}{FFFF99}
-\definecolor{cleanBlue}{HTML}{3d0099}
-%\newcommand{\cleancode}[1]{\begin{addmargin}[3em]{3em}\fcolorbox{cleanOrange}{cleanYellow}{\texttt{\textcolor{cleanOrange}{#1}}}\end{addmargin}}
-\newcommand{\cleancode}[1]{\begin{addmargin}[3em]{3em}\texttt{\textcolor{cleanOrange}{#1}}\end{addmargin}}
-\newcommand{\cleanstyle}[1]{\text{\textcolor{cleanOrange}{\texttt{#1}}}}
 
-
-\usepackage[colorinlistoftodos,prependcaption,textsize=footnotesize]{todonotes}
-\newcommandx{\commred}[2][1=]{\textcolor{Red}
-{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}}
-\newcommandx{\commblue}[2][1=]{\textcolor{Blue}
-{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}}
-\newcommandx{\commgreen}[2][1=]{\textcolor{OliveGreen}{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}}
-\newcommandx{\commpurp}[2][1=]{\textcolor{Plum}{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}}
-
-\def\code#1{{\tt #1}}
-
-\def\note#1{\noindent{\bf [Note: #1]}}
 %-----------------------------------------BEGIN DOC----------------------------------------
 
 \begin{document}
@@ -213,14 +170,30 @@ We (or TAs) will check and evaluate your design with a pre-coded test program, i
 \subsection{Test Procedure}\label{sub:TestProc}
 As Operation System is still not available for this stage, the program and initial data are feed into Instruction Memory and Data Memory from the Tester program respectively. By utilizing \code{ori} instruction, the Tester program provides an alternative data memory initialization, \code{\$t = \$zero | imm16} (\code{ori, rt, \$zero Imm16}). In which, \code{\$t} stores the result of \textit{or} operation (immediate "or" zero register), i.e. the immediate is loaded into register file by \code{ori} instruction.
 
+\begin{figure}[ht]
+ \centering
+ \includegraphics[height=7cm]{images/l1TestProc.pdf}
+ \caption{Test Procedure}
+ \label{fig:testproc}
+\end{figure}
+
+Fig. \ref{fig:testproc} shows the whole test procedure. In which, the designed CPU is denoted by DUT (Design under Test), the instruction is feed into Imem at the initialization stage, and the data about how program running is collected at the end.
 
 \subsection{Signals for Test mode}\label{sub:signal}
 
+\begin{figure}[ht]
+	\centering
+	\includegraphics[height=9cm]{images/l1ModulesTest.pdf}
+	\caption{Top Block Diagram for Test Mode}
+	\label{fig:moduletest}
+\end{figure}
 %\url{}
-\begin{table}[h]
+The recommended Top block structure is shown in Fig. \ref{fig:moduletest}, which the blue marked interfaces are connected with testbench. So please define these interfaces in your top module as exactly the same as Table \ref{tab:signaldef} shown.
+
+\begin{table}[htp]
 \caption{Signals Definition for Test Mode}\label{tab:signaldef}
 \begin{center}
-	\begin{tabular}{|l|l|l|p{7cm}|}
+	\begin{tabular}{|l|l|l|p{6cm}|}
 	\hline
 	\textbf{Signal Name} & \textbf{Direction} & \textbf{Width} & \textbf{Function}\\ \hline \hline
 	boot			& Input 	& 1-bit	& Trigger the boot test mode, 
@@ -229,20 +202,84 @@ As Operation System is still not available for this stage, the program and initi
 								  CPU regular process mode. In test mode, it will be set to 1 when if writing instructions to imem, otherwise it is set to 0.\\ \hline
 	test\_im\_re 	& Input & 1-bit & Instruction memory read enable in test mode,set to 0 in 	
 								  CPU regular process mode. In test mode, it will be set to 1 when if reading instructions out, otherwise it is set to 0. \\ \hline
+	test\_im\_addr 	& Input & 32-bit& Instruction memory address\\ \hline
 	test\_im\_in 	& Input & 32-bit& Instruction memory data input for test mode. \\ \hline
 	test\_im\_out 	& Output& 32-bit& Instruction memory data output for test mode. \\ \hline
 	test\_dm\_wr 	& Input	& 1-bit	& Data memory write enable in test mode,set to 0 in 	
 								  CPU regular process mode. In test mode, it will be set to 1 when if writing data to dmem, otherwise it is set to 0.\\ \hline
 	test\_dm\_re 	& Input & 1-bit & Data memory read enable in test mode,set to 0 in 	
 								  CPU regular process mode. In test mode, it will be set to 1 when if reading data out, otherwise it is set to 0.\\ \hline
+	test\_dm\_addr 	& Input & 32-bit& Data memory address\\ \hline
 	test\_dm\_in 	& Input & 32-bit& Data memory input for test mode. \\ \hline
 	test\_dm\_out 	& Output& 32-bit& Data memory output for test mode. \\ \hline
-	\color{green}{valid}& \color{green}{Output} &\color{green}{1-bit}& \color{green}{If CPU stopped or any exception happens, valid signal is set to 0.}\\ 
+	valid			& Output& 1-bit & If CPU stopped or any exception happens, valid signal is set to 0.\\ 
 	\hline
 	\end{tabular}
 \end{center}
 \end{table}
 
-\subsection{}
+Additionally, a \code{valid} signal is highly recommended. It can be monitored to find whether CPU works correctly. As shown in Table \ref{tab:signaldef}, \code{valid} will be set to 0, if the fetched instruction is not defined in our 7-Inst ISA (e.g. \code{0xFFFFFFFF}), which is to tell test the CPU is working in exception.
+
+\subsection{Basic Logic for Test}\label{sub:testlogic}
+Please add the test logic into your top module as shown in Table \ref{tab:logic}.\\
+An example \code{Top} Module is presented below:
+\begin{scala}
+class TopIO extends Bundle() {
+	val boot = Input(Bool()) 
+// imem and dmem interface for Tests
+	val test_im_wr		= Input(Bool())
+	val test_im_rd 		= Input(Bool())
+	val test_im_addr 	= Input(UInt(32.W))
+	val test_im_in 		= Input(UInt(32.W))
+	val test_im_out 	= Output(UInt(32.W))
+
+	val test_dm_wr		= Input(Bool())
+	val test_dm_rd 		= Input(Bool())
+	val test_dm_addr 	= Input(UInt(32.W))
+	val test_dm_in 		= Input(UInt(32.W))
+	val test_dm_out 	= Output(UInt(32.W))
+
+	val valid			= Output(Bool())
+}
+class Top extends Module() {
+	val io 		= IO(new TopIO())//in chisel3, io must be wrapped in IO(...) 
+	//...
+	when (io.boot & io.test_im_wr){
+		imm(test_im_addr) := test_im_in
+		} .elsewhen (io.boot & io.test_dm_wr){
+		// please finish it
+		} //...
+}
+\end{scala}
+\begin{table}[htp]
+	\caption{Logic Operation in Test Mode}\label{tab:logic}
+	\begin{center}
+		\begin{tabular}{|l|c|c|}
+		\hline
+		\textbf{Operation}	& \textbf{Signal}	& \textbf{Boolean Logic} \\ \hline
+		\multirow{5}{*}{Imem Write}& boot		& 1 \\ \cline{2-3}
+							& test\_im\_wr 		& 1 \\ \cline{2-3}
+							& test\_im\_rd 		& 0 \\ \cline{2-3}
+							& test\_dm\_wr 		& 0 \\ \cline{2-3}
+							& test\_dm\_rd 		& 0 \\ \hline
+		\multirow{5}{*}{Dmem Write}& boot 		& 1 \\ \cline{2-3}
+							& test\_im\_wr 		& 0 \\ \cline{2-3}
+							& test\_im\_rd 		& 0 \\ \cline{2-3} 
+							& test\_dm\_wr 		& 1 \\ \cline{2-3}
+							& test\_dm\_rd 		& 0 \\ \hline
+		\multirow{5}{*}{Imem Read}& boot 		& 1 \\ \cline{2-3}
+							& test\_im\_wr 		& 0 \\ \cline{2-3}
+							& test\_im\_rd 		& 1 \\ \cline{2-3} 
+							& test\_dm\_wr 		& 0 \\ \cline{2-3}
+							& test\_dm\_rd 		& 0 \\ \hline
+		\multirow{5}{*}{Dmem Read}& boot 		& 1 \\ \cline{2-3}
+							& test\_im\_wr 		& 0 \\ \cline{2-3}
+							& test\_im\_rd 		& 0 \\ \cline{2-3} 
+							& test\_dm\_wr 		& 0 \\ \cline{2-3}
+							& test\_dm\_rd 		& 1 \\ \hline
+		\end{tabular}
+	\end{center}
+\end{table}
+
 \end{document}
 
