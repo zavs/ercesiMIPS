@@ -1,0 +1,174 @@
+\documentclass[a4paper]{article}
+
+\input{style/ch_xelatex.tex}
+\input{../style/scala.tex}
+
+\lstset{frame=, basicstyle={\footnotesize\ttfamily}}
+
+
+
+\graphicspath{ {images/} }
+\usepackage{ctex}
+%-----------------------------------------BEGIN DOC----------------------------------------
+
+\begin{document}
+\renewcommand{\contentsname}{目\ 录}
+\renewcommand{\appendixname}{附录}
+\renewcommand{\appendixpagename}{附录}
+\renewcommand{\refname}{参考文献} 
+\renewcommand{\figurename}{图}
+\renewcommand{\tablename}{表}
+\title{{\Huge ercesiMIPS 实验报告{\large\linebreak\\}}{\Large 实验1 单周期处理器\linebreak\linebreak}}
+%please write your name, Student #, and Class # in Authors, student ID, and class # respectively
+\author{\\姓名: 姓 名\\
+学号: xxxxxx\\
+班号: xxxxx\\\\
+CS 11007 计算机组成与体系结构\\
+(春季, 2017)\\\\
+西北工业大学\\
+计算机学院\\
+ERCESI}
+\date{27 April 2017}
+\maketitle
+\newpage
+
+%-----------------------------------------ABSTRACT-------------------------------------
+\begin{center}
+{\large\bf{摘要\\}}
+\end{center}
+请在这里输入摘要内容.
+\newpage
+%-----------------------------------------ABSTRACT-------------------------------------
+\begin{center}
+{\large\bf{版权声明\\}}
+\end{center}
+该文件受《中华人名共和国著作权法》的保护。ERCESI实验室保留拒绝授权违法复制该文件的权利。任何收存和保管本文件各种版本的单位和个人，未经ERCESI实验室（西北工业大学）同意，不得将本文档转借他人，亦不得随意复制、抄录、拍照或以任何方式传播。 否则，引起有碍著作权之问题，将可能承担法律责任。\newpage
+%-----------------------------------------CONTENT-------------------------------------
+\begin{center}
+\tableofcontents\label{c}
+\end{center}
+\newpage
+
+%------------------------------------------TEXT--------------------------------------------
+
+%----------------------------------------OVERVIEW-----------------------------------------
+
+\section{概述} \label{overview}%------------------------------
+这一节请主要描述组成原理课程（cs11007）中所介绍的单周期处理器的基本结构及工作机理。Latex中文添加了ctex包，请使用xelatex编译该文件，即在对应文件夹命令行输出，xelatex ReportTemp\_ch\_xelatex.tex
+可使用分列项目（itemize）的方法说明不同的属性介绍。例如：
+\begin{itemize}
+	\item{\textbf{处理器支持的指令} 包括： \emph{sub, add, or, ori, lw, sw, lst, beq, j}。}
+    \item{\textbf{所有指令在一个周期内完成} 在目前阶段，单周期处理器模型讲计算、控制通路分开设计，为理解处理器结构提供了良好的支持。}
+    \item{\textbf{本设计包含处理器数据通路、控制逻辑以及存储结构} 为了说明计算机系统结构的特点，我们推荐奖处理器的数据通路、控制通路分开设计。}
+    \item{\textbf{使用Chisel3描述结构} Chisel是一种强大的结构化硬件描述语言，可以对模块、接口以及操作等进行高效率的描述，与Verilog语言相比较，对电路的结构属性具有更好的封装，对系统的描述更加简化。我们选择Chisel3是因为在Linux系统中，使用Chisel3完全不再依赖工业EDA软件实现电路的逻辑仿真，更有利于学术研究和教学应用。虽然Chisel语法在不同版本差异不大，但是部分修饰符的描述方式仍然具有差别，详细区别请参考: \url{https://github.com/ucb-bar/chisel3/wiki/Chisel3-vs-Chisel2}.}
+\end{itemize}
+
+%----------------------------------SYSTEM DESIGN------------------------------------------
+
+\newpage
+\section{系统设计} \label{sysdes}%------------------------------
+\subsection{System Overview}\label{sub:sysover}
+请在这一节描述单周期处理器的系统设计。推荐使用图表进行说明的方法，Latex中插入图并进行索引的方式如下：图\ref{fig:singleblock}. 
+\begin{figure}[ht]
+ \centering
+ \includegraphics[height=5cm]{images/l1sys.pdf}
+ \caption{单周期处理器结构图}
+ \label{fig:singleblock}
+\end{figure}
+如果需要索引参考文献，请使用\cite{Erdos01}, 同时已经将参考文献的项目模版在文末写出。
+\subsection{接口定义}\label{sub:Interface}
+请详细描述系统顶层接口信号的名称、逻辑特征、时许特性。可以建立类似表\ref{tab:signaldef}这样的列表进行说明。
+
+\begin{table}[htp]
+\caption{测试模式信号定义}\label{tab:signaldef}
+\begin{center}
+	\begin{tabular}{|l|l|l|p{6cm}|}
+	\hline
+	\textbf{信号名} & \textbf{方向} & \textbf{位宽} & \textbf{功能描述}\\ \hline \hline
+	boot			& Input 	& 1-bit	& 触发测试模式, 当处理器正常工作时被置为0\\ \hline
+	test\_im\_wr 	& Input	& 1-bit	& Instruction memory write enable in test mode,set to 0 in 	
+								  CPU regular process mode. In test mode, it will be set to 1 when if writing instructions to imem, otherwise it is set to 0.\\ \hline
+	test\_im\_re 	& Input & 1-bit & Instruction memory read enable in test mode,set to 0 in 	
+								  CPU regular process mode. In test mode, it will be set to 1 when if reading instructions out, otherwise it is set to 0. \\ \hline
+	test\_im\_addr 	& Input & 32-bit& Instruction memory address\\ \hline
+	test\_im\_in 	& Input & 32-bit& Instruction memory data input for test mode. \\ \hline
+	test\_im\_out 	& Output& 32-bit& Instruction memory data output for test mode. \\ \hline
+	test\_dm\_wr 	& Input	& 1-bit	& Data memory write enable in test mode,set to 0 in 	
+								  CPU regular process mode. In test mode, it will be set to 1 when if writing data to dmem, otherwise it is set to 0.\\ \hline
+	test\_dm\_re 	& Input & 1-bit & Data memory read enable in test mode,set to 0 in 	
+								  CPU regular process mode. In test mode, it will be set to 1 when if reading data out, otherwise it is set to 0.\\ \hline
+	test\_dm\_addr 	& Input & 32-bit& Data memory address\\ \hline
+	test\_dm\_in 	& Input & 32-bit& Data memory input for test mode. \\ \hline
+	test\_dm\_out 	& Output& 32-bit& Data memory output for test mode. \\ \hline
+	valid			& Output& 1-bit & If CPU stopped or any exception happens, valid signal is set to 0.\\ 
+	\hline
+	\end{tabular}
+\end{center}
+\end{table}
+
+\subsection{接口的（时许）逻辑}\label{sub:logicinter}
+请在这个小节描述顶层结构中接口信号使用的逻辑、时序关系等。同样请利用图、表的方法进行描述。特别是时序，请画出时许图。
+% -----------------------------------BLOCKS DESIGN----------------------------------------
+\section{模块详细设计}
+这一节，主要描述各个模块的功能、接口、逻辑控制方法（状态机控制方法）等。
+\subsection{ALU}\label{sub:alu}
+\subsubsection{功能描述}
+\subsubsection{接口定义}
+\subsubsection{逻辑控制}
+
+\subsection{控制模块}\label{sub:ctl}
+\subsubsection{功能描述}
+\subsubsection{接口定义}
+\subsubsection{逻辑控制}
+
+\subsection{数据通路}\label{sub:dat}
+\subsubsection{功能描述}
+\subsubsection{接口定义}
+\subsubsection{逻辑控制}
+
+%add more subsections for other block in you CPU design.
+
+\section{实验过程记录}\label{labrec}
+记录实验的过程，完成了什么样的工作，存在的问题包括哪些，解决方案如何等。subsubsection名称自行设定。
+
+% -----------------------------------Appendix----------------------------------------
+\appendix
+\section{代码}\label{sub:app.code}
+请在附录\ref{sub:app.code}中添加代码。请使用如下Scala的语法高亮描述方法。
+\begin{scala}
+class TopIO extends Bundle() {
+	val boot = Input(Bool()) 
+// imem and dmem interface for Tests
+	val test_im_wr		= Input(Bool())
+	val test_im_rd 		= Input(Bool())
+	val test_im_addr 	= Input(UInt(32.W))
+	val test_im_in 		= Input(UInt(32.W))
+	val test_im_out 	= Output(UInt(32.W))
+
+	val test_dm_wr		= Input(Bool())
+	val test_dm_rd 		= Input(Bool())
+	val test_dm_addr 	= Input(UInt(32.W))
+	val test_dm_in 		= Input(UInt(32.W))
+	val test_dm_out 	= Output(UInt(32.W))
+
+	val valid			= Output(Bool())
+}
+class Top extends Module() {
+	val io 		= IO(new TopIO())//in chisel3, io must be wrapped in IO(...) 
+	//...
+	when (io.boot & io.test_im_wr){
+		imm(io.test_im_addr) := io.test_im_in
+		} .elsewhen (io.boot & io.test_dm_wr){
+		// please finish it
+		} //...
+}
+\end{scala}
+\newpage
+% -----------------------------------REFERENCE----------------------------------------
+\begin{thebibliography}{9}
+\bibitem{Erdos01} P. Erd\H os, \emph{A selection of problems and
+results in combinatorics}, Recent trends in combinatorics (Matrahaza,
+1995), Cambridge Univ. Press, Cambridge, 2001, pp. 1--6.
+\end{thebibliography}
+\end{document}
+
