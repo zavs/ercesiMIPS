@@ -209,8 +209,12 @@ In which, a user-defined Data Path module, with module name \code{DatPath}, is d
 
 \newpage
 \section{Evaluation Requirement} \label{sec:Functions}%------------------------------
-We (or TAs) will check and evaluate your design with a pre-coded test program, in which a pseudo-random instruction queue will be feed into you instruction memory and data memory. To ensure this test works correctly, the test signal interfaces name \textbf{MUST} meets the requirements shown in Table \ref{tab:signaldef}, and the logic operation of these interfaces \textbf{MUST} be design as  
-\subsection{Signal Requirement}\label{sub:signal}
+We (or TAs) will check and evaluate your design with a pre-coded test program, in which a pseudo-random instruction queue will be feed into you instruction memory and data memory. To ensure this test works correctly, the test signal interfaces name \textbf{MUST} meets the requirements shown in Table \ref{tab:signaldef}, and the logic operation of these interfaces \textbf{MUST} be design as
+\subsection{Test Procedure}\label{sub:TestProc}
+As Operation System is still not available for this stage, the program and initial data are feed into Instruction Memory and Data Memory from the Tester program respectively. By utilizing \code{ori} instruction, the Tester program provides an alternative data memory initialization, \code{\$t = \$zero | imm16} (\code{ori, rt, \$zero Imm16}). In which, \code{\$t} stores the result of \textit{or} operation (immediate "or" zero register), i.e. the immediate is loaded into register file by \code{ori} instruction.
+
+
+\subsection{Signals for Test mode}\label{sub:signal}
 
 %\url{}
 \begin{table}[h]
@@ -218,7 +222,7 @@ We (or TAs) will check and evaluate your design with a pre-coded test program, i
 \begin{center}
 	\begin{tabular}{|l|l|l|p{7cm}|}
 	\hline
-	Signal Name 	& Direction & Width & Function\\ \hline
+	\textbf{Signal Name} & \textbf{Direction} & \textbf{Width} & \textbf{Function}\\ \hline \hline
 	boot			& Input 	& 1-bit	& Trigger the boot test mode, 
 									  set to 0 in CPU regular process mode\\ \hline
 	test\_im\_wr 	& Input	& 1-bit	& Instruction memory write enable in test mode,set to 0 in 	
@@ -233,9 +237,12 @@ We (or TAs) will check and evaluate your design with a pre-coded test program, i
 								  CPU regular process mode. In test mode, it will be set to 1 when if reading data out, otherwise it is set to 0.\\ \hline
 	test\_dm\_in 	& Input & 32-bit& Data memory input for test mode. \\ \hline
 	test\_dm\_out 	& Output& 32-bit& Data memory output for test mode. \\ \hline
+	\color{green}{valid}& \color{green}{Output} &\color{green}{1-bit}& \color{green}{If CPU stopped or any exception happens, valid signal is set to 0.}\\ 
 	\hline
 	\end{tabular}
 \end{center}
 \end{table}
+
+\subsection{}
 \end{document}
 
