@@ -245,7 +245,7 @@ class Top extends Module() {
 	val io 		= IO(new TopIO())//in chisel3, io must be wrapped in IO(...) 
 	//...
 	when (io.boot & io.test_im_wr){
-		imm(test_im_addr) := test_im_in
+		imm(io.test_im_addr) := io.test_im_in
 		} .elsewhen (io.boot & io.test_dm_wr){
 		// please finish it
 		} //...

@@ -17,6 +17,7 @@
 \usepackage{multicol}
 \usepackage{multirow}
 \usepackage[procnames]{listings}
+\usepackage{appendix}
 
 \newcommand\tab[1][1cm]{\hspace*{#1}}
 \hypersetup{colorlinks=true, linkcolor=black}
@@ -44,3 +45,17 @@
 \def\code#1{{\tt #1}}
 
 \def\note#1{\noindent{\bf [Note: #1]}}
+
+\makeatletter
+%% The "\@seccntformat" command is an auxiliary command
+%% (see pp. 26f. of 'The LaTeX Companion,' 2nd. ed.)
+\def\@seccntformat#1{\@ifundefined{#1@cntformat}%
+   {\csname the#1\endcsname\quad}  % default
+   {\csname #1@cntformat\endcsname}% enable individual control
+}
+\let\oldappendix\appendix %% save current definition of \appendix
+\renewcommand\appendix{%
+    \oldappendix
+    \newcommand{\section@cntformat}{\appendixname~\thesection\quad}
+}
+\makeatother
