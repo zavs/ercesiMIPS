@@ -15,12 +15,13 @@ Three templates are present now.
 
 ### English Report with Latex
 Latex template file is `ReportTemp.tex`. It includes two file in directory `ReportTemp/style`, `style/scala.tex` and `style/common.tex`.
+A template has been upload to www.overleaf.com, and in Template Reviewing of overleaf support team. Temporally, a read-only [shared link](https://www.overleaf.com/read/vdkvmyxvfwsq) is presented. 
 
 
 ### Chinese Report with Latex
 Latex template file is `ReportTemp_ch_xelatex.tex`. It needs xelatex to compile, since Chinese package `ctex` are not supported by pdflatex.
-Also this file includes `style/ch_xelatex.tex` and `style/scala.tex`.
+Also this file includes `style/ch_xelatex.tex` and `style/scala.tex`. A template has been upload to www.overleaf.com, and in Template Reviewing of overleaf support team. Temporally, a read-only [shared link](https://www.overleaf.com/read/tgvfkpdbxvpw) is presented. 
 
 
 ### Chinese Report which is compatible with Microsoft Word or Other WYSIWYG Word Processor
-`ReportTemp_ch.rtf`
+A rich text file template is uploaded with name `ReportTemp_ch.rtf`
