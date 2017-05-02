@@ -15,7 +15,7 @@ Three templates are present now.
 
 ### English Report with Latex
 Latex template file is `ReportTemp.tex`. It includes two file in directory `ReportTemp/style`, `style/scala.tex` and `style/common.tex`.
-A template has been upload to www.overleaf.com, and in Template Reviewing of overleaf support team. Temporally, a read-only [shared link](https://www.overleaf.com/read/vdkvmyxvfwsq) is presented. 
+A [template](https://www.overleaf.com/latex/templates/ercesimips-lab-report-template/vdkvmyxvfwsq#.WQfzpVKB3ys) has been upload to www.overleaf.com, and proved by overleaf support team. 
 
 
 ### Chinese Report with Latex
