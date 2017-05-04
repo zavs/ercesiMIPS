@@ -21,8 +21,18 @@ object Launcher {
       Driver(() => new ALU(), backendName) {
         (c) => new ALUTests(c)
       }
-    }/*,
-
+    },
+    "Top" -> { (backendName: String) =>
+      Driver(() => new Top(), backendName) {
+        (c) => new TopTests(c)
+      }
+    },
+    "CtlPath" -> { (backendName: String) =>
+      Driver(() => new CtlPath(), backendName) {
+        (c) => new CtlPathTests(c)
+      }
+    }
+    /*,
     "ALU11" -> { (backendName: String) =>
       Driver(() => new ALU11(), backendName) {
         (c) => new ALU11Tests(c)
