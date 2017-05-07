@@ -27,7 +27,7 @@
 // 0x00000003 341207d4 ori 	$s2, $zero, 2004
 // 0x00000004 02298820 add	$s1, $s1, $t1
 // 0x00000000 ac090000 sw 	$t1, 0($zero)
-// 0x00000000 ac110004 sw	$s2, 4($zero)
+// 0x00000000 ac110004 sw	$s1, 4($zero)
 // 0x00000000 ac12000c sw	$s2, 12($zero)
 // 0x00000000 12320001 beq	$s1, $s2, 1
 // 0x00000000 08000001 j	1    // 0000 0100 0000 0000 0000 0000 0000 0001
@@ -60,7 +60,7 @@ class TopTests(c: Top) extends PeekPokeTester(c) {
 			Inst = Integer.parseUnsignedInt(line, 16)
 			poke(c.io.boot, 1)
 			poke(c.io.test_im_wr, 1)
-			poke(c.io.test_im_addr, addr)
+			poke(c.io.test_im_addr, addr*4)
 			poke(c.io.test_im_in, asUInt(Inst))
 			addr = addr + 1
 			step(1)
@@ -91,7 +91,7 @@ class TopTests(c: Top) extends PeekPokeTester(c) {
 	for (i <- 0 until 3){
 		poke(c.io.boot, 1)
 		poke(c.io.test_dm_rd, 1)
-		poke(c.io.test_dm_addr, i)
+		poke(c.io.test_dm_addr, i*4)
 		expect(c.io.test_dm_out, DmmQ(i))
 
 		step(1)
