@@ -91,6 +91,7 @@ class TopTests(c: Top) extends PeekPokeTester(c) {
 	for (i <- 0 until 3){
 		poke(c.io.boot, 1)
 		poke(c.io.test_dm_rd, 1)
+		poke(c.io.test_dm_addr, i)
 		expect(c.io.test_dm_out, DmmQ(i))
 
 		step(1)
