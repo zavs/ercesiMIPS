@@ -26,12 +26,13 @@ object Launcher {
       Driver(() => new Top(), backendName) {
         (c) => new TopTests(c)
       }
-    },
+    }
+    /*，
     "CtlPath" -> { (backendName: String) =>
       Driver(() => new CtlPath(), backendName) {
         (c) => new CtlPathTests(c)
       }
-    }
+    }*/
     /*,
     "ALU11" -> { (backendName: String) =>
       Driver(() => new ALU11(), backendName) {
