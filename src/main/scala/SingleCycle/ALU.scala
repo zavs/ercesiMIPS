@@ -110,6 +110,7 @@ class ALU9 extends Module{
     val logic_out = Mux(io.ALUctr === FN_OR, in1_xor_in2, 0.U) | 
     Mux(io.ALUctr === FN_OR || io.ALUctr === FN_AND, io.in1 & io.in2, 0.U)
     
+    // Output the adder result or logic result
     val out = Mux(io.ALUctr === FN_ADD || io.ALUctr === FN_SUB, 
     	adder_out, logic_out)
 
