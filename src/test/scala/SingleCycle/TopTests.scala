@@ -44,6 +44,7 @@ import scala.io.Source
 class TopTests(c: Top) extends PeekPokeTester(c) {
 	def asUInt(InInt: Int) = (BigInt(InInt >>> 1) << 1) + (InInt & 1)
 
+	// Reset the CPU
 	def TopBoot() = {
 		poke(c.io.boot, 1)
 		poke(c.io.test_im_wr, 0)
@@ -51,11 +52,12 @@ class TopTests(c: Top) extends PeekPokeTester(c) {
 		step(1)
 	}
 
+	// Initialize the IMM content from file "inst.s", 
+	// which could be dumped from MARS.
 	def WriteImm () = {
 		val filename = "inst.s"
 		var addr = 0
 		var Inst = 0
-		//val lines = Source.fromFile(filename).getLines.toArray
 		for (line <- Source.fromFile(filename).getLines){
 			Inst = Integer.parseUnsignedInt(line, 16)
 			poke(c.io.boot, 1)
@@ -67,33 +69,28 @@ class TopTests(c: Top) extends PeekPokeTester(c) {
 		}
 	}
 
-
+    // Reset CPU
 	TopBoot()
 
+	// Init IMM
 	WriteImm()
 
-	//RtQ = List(0, 9, 17, 18, 9, 9, 18, 18, 18, 0)
-	//val aluout = List()
-	
-	for (i <- 0 until 100){
+    // Run the CPU for 100 cycles
+    for (i <- 0 until 100){
 		poke(c.io.boot, 0)
 		poke(c.io.test_im_wr, 0)
 		poke(c.io.test_dm_wr, 0)
-		//println (peek(c.cpath.io.Inst).toString)
-		
-		//println (peek(c.dpath.io.dmem_datIn).toString)
-		//printf("pc 0x%x", peek(c.dpath.io.imem_addr))
 		expect(c.io.valid, 1)
-
 		step(1)
 	}
-	val DmmQ = List(1, 2004, 2004)
+
+	// Check the SW instruction in the DMM
+	val DmmQ = List(1, 2004, 2004)  // The value is decided by "inst.s"
 	for (i <- 0 until 3){
 		poke(c.io.boot, 1)
 		poke(c.io.test_dm_rd, 1)
 		poke(c.io.test_dm_addr, i*4)
 		expect(c.io.test_dm_out, DmmQ(i))
-
 		step(1)
 	}
 }
