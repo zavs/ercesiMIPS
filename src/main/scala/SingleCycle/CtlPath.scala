@@ -11,8 +11,7 @@ package SingleCycle
 
 import chisel3._
 import chisel3.util._
-//import chisel3.iotesters.Driver
-//import utils.ercesiMIPSRunner
+
 class CtltoDatIo extends Bundle()
 {
 	val nPC_MUX_sel = Output(Bool())
@@ -22,7 +21,6 @@ class CtltoDatIo extends Bundle()
 	val ALUctr		= Output(UInt(2.W))
 	val ALUsrc		= Output(Bool())
 	val MemtoReg	= Output(Bool())
-	//val MemWr		= Output(Bool())
 	val Rd 			= Output(UInt(5.W))
 	val Rt 			= Output(UInt(5.W))
 	val Rs 			= Output(UInt(5.W))
@@ -43,5 +41,9 @@ class CPathIo extends Bundle()
 class CtlPath extends Module()
 {
 	val io 			= IO(new CPathIo ())
-// add your code
+	// Add your code here. You can init all control signals first.
+	// Then decode these signals according to current instruction.
+	io.MemWr := 0.U
+	io.valid := 1.U
+	io.ctl.RegWr := false.B
 }
