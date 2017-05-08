@@ -2,7 +2,7 @@
 //--------------------------------------------------------------------------
 // ercesiMIPS Single Cycle Processor ALU for 9(11) instructions
 //
-// Meng zhang
+// Meng Zhang
 // version 0.1
 //--------------------------------------------------------------------------
 //**************************************************************************
@@ -50,7 +50,7 @@ class ALU extends Module {
 
 
 // For our first sample ALU with 9 Insts
-// The supported instruction is:
+// The supported instruction is following:
 // ADD  000000 sssss ttttt ddddd 00000 100000 //R type (signed)
 // SUB  000000 sssss ttttt ddddd 00000 100010 //R type (signed)
 // OR   000000 sssss ttttt ddddd 00000 100101 //R type (unsigned)
@@ -76,9 +76,9 @@ object ALU9
 
 	def FN_BEQ	= FN_SUB	//011
 
-	//def isSub(cmd: UInt) = cmd(6)
-	def isSub(cmd: UInt) = cmd === FN_SUB || cmd === FN_SLT
+    def isSub(cmd: UInt) = (cmd === FN_SUB) || (cmd === FN_SLT)
 }
+
 import ALU9._
 
 class ALU9 extends Module{
@@ -99,14 +99,19 @@ class ALU9 extends Module{
 	val adder_out = io.in1 + in2_inv + isSub(io.ALUctr)
 
 	// SLT and BEQ comparation Output
+	// For BEQ, cmp_out = (in1_xor_in2 === 0.U)
+	// For SLT, cmp_out = adder_out(31) if io.in1(31) != io.in2(31)
+	// Otherwise, cmp_out = adder_out(31)
 	io.cmp_out := Mux(io.ALUctr === FN_BEQ, in1_xor_in2 === 0.U, 
 		Mux(io.in1(31) != io.in2(31), adder_out(31),
 		Mux(adder_out(31), true.B, false.B)))
 
 	// AND, OR, however this can also output XOR
-  val logic_out = Mux(io.ALUctr === FN_OR, in1_xor_in2, 0.U) | 
-  Mux(io.ALUctr === FN_OR || io.ALUctr === FN_AND, io.in1 & io.in2, 0.U)
-  val out = Mux(io.ALUctr === FN_ADD || io.ALUctr === FN_SUB, adder_out, logic_out)
+    val logic_out = Mux(io.ALUctr === FN_OR, in1_xor_in2, 0.U) | 
+    Mux(io.ALUctr === FN_OR || io.ALUctr === FN_AND, io.in1 & io.in2, 0.U)
+    
+    val out = Mux(io.ALUctr === FN_ADD || io.ALUctr === FN_SUB, 
+    	adder_out, logic_out)
 
-  io.ALUout := out
+    io.ALUout := out
 }
