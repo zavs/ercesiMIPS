@@ -34,8 +34,13 @@ class DPathIo extends Bundle()
 class DatPath extends Module {
 	val io = IO(new DPathIo ())
 
+	// Instance ALU
 	val alu9 = Module(new ALU9())
+	
+	// The only register in the SingleCycle MIPS
+	val pc = RegInit(0.U(30.W)) 
+
 	//
-	// add your code
+	// Add your code here
 	// 
 }
