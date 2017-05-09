@@ -35,7 +35,7 @@ class CPathIo extends Bundle()
 	val MemWr		= Output(Bool())
 	val valid		= Output(Bool())
 	val ctl 		= new CtltoDatIo()
-	val dat 		= new DatToCtlIo().flip()
+	val dat 		= Flipped(new DatToCtlIo)
 }
 
 class CtlPath extends Module()

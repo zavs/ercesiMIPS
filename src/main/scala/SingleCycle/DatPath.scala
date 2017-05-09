@@ -27,7 +27,7 @@ class DPathIo extends Bundle()
 	val dmem_addr	= Output(UInt(32.W))
 	val dmem_datIn	= Output(UInt(32.W))
 	val dmem_datOut	= Input(UInt(32.W))
-	val ctl  		= new CtltoDatIo().flip()
+	val ctl  		= Flipped(new CtltoDatIo)
 	val dat  		= new DatToCtlIo()
 }
 
