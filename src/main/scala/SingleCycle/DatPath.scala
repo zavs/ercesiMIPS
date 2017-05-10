@@ -38,7 +38,8 @@ class DatPath extends Module {
 	val alu9 = Module(new ALU9())
 	
 	// The only register in the SingleCycle MIPS
-	val pc = RegInit(0.U(30.W)) 
+	val pc = RegInit(0.U(30.W)) //if you adopt pc+1 for next pc
+	//val pc = RegInit(0.U(32.W)) // if you adopt pc+4 for next pc
 
 	//
 	// Add your code here
