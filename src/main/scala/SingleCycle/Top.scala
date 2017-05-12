@@ -42,21 +42,32 @@ class Top extends Module() {
 	val imm = Mem(256, UInt(32.W))
 	val dmm = Mem(1024, UInt(32.W))
 
+        io.test_dm_out := 0.U
+	io.test_im_out := 0.U
+	cpath.io.Inst := 0.U
 	when (io.boot && io.test_im_wr){
 		imm(io.test_im_addr >> 2) := io.test_im_in
-		} .elsewhen (io.boot && io.test_dm_wr){
-			dmm(io.test_dm_addr >> 2) := io.test_dm_in
-		} .elsewhen (io.boot && io.test_im_rd){
-			io.test_im_out := imm(io.test_im_addr >> 2)
-		} .elsewhen (io.boot && io.test_dm_rd){
-			io.test_dm_out := dmm(io.test_dm_addr >> 2)
-		} .elsewhen (!io.boot){
-			cpath.io.Inst := Mux(io.boot, 0.U, imm(dpath.io.imem_addr >> 2))
-			dpath.io.dmem_datOut := dmm(dpath.io.dmem_addr >> 2)
-			when (cpath.io.MemWr) {
-				dmm(dpath.io.dmem_addr >> 2) := dpath.io.dmem_datIn
-			}
+		cpath.io.Inst := 0.U
+	 } 
+	when (io.boot && io.test_dm_wr){
+		dmm(io.test_dm_addr >> 2) := io.test_dm_in
+		cpath.io.Inst := 0.U
+	} 
+	when (io.boot && io.test_im_rd){
+		io.test_im_out := imm(io.test_im_addr >> 2)
+		cpath.io.Inst := 0.U
+	} 
+	when (io.boot && io.test_dm_rd){
+		io.test_dm_out := dmm(io.test_dm_addr >> 2)
+		cpath.io.Inst := 0.U
+	} 
+	when (!io.boot){
+		cpath.io.Inst := Mux(io.boot, 0.U, imm(dpath.io.imem_addr >> 2))
+		dpath.io.dmem_datOut := dmm(dpath.io.dmem_addr >> 2)
+		when (cpath.io.MemWr) {
+			dmm(dpath.io.dmem_addr >> 2) := dpath.io.dmem_datIn
 		}
+	}
 	
 		 //...
 }
