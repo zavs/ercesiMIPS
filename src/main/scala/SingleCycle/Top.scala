@@ -38,11 +38,11 @@ class Top extends Module() {
 	cpath.io.ctl <> dpath.io.ctl
 	cpath.io.dat <> dpath.io.dat
 	io.valid := cpath.io.valid
+	cpath.io.boot := io.boot
 
 	val imm = Mem(256, UInt(32.W))
 	val dmm = Mem(1024, UInt(32.W))
-
-        io.test_dm_out := 0.U
+	io.test_dm_out := 0.U
 	io.test_im_out := 0.U
 	cpath.io.Inst := 0.U
 	when (io.boot && io.test_im_wr){
@@ -68,6 +68,23 @@ class Top extends Module() {
 			dmm(dpath.io.dmem_addr >> 2) := dpath.io.dmem_datIn
 		}
 	}
-	
+
+	val clk_cnt = RegInit(0.U(32.W))
+	clk_cnt := clk_cnt + 1.U
+	// printf("Cyc=%d, pc=0x%x, Inst=0x%x, cpath.ExtOp=%x, cpath.nPC_sel=%x, boot=%d \n",
+	// 	clk_cnt,
+	// 	dpath.io.imem_addr,
+	// 	cpath.io.Inst,
+	// 	cpath.io.ctl.ExtOp,
+	// 	cpath.io.ctl.nPC_sel,
+	// 	cpath.io.boot)
+	printf("Cyc=%d, pc=0x%x, Inst=0x%x, boot=%d, dmem_in = 0x%x, rd_dmm=0x%x, dmm=0x%x\n",
+		clk_cnt,
+		dpath.io.imem_addr,
+		cpath.io.Inst,
+		cpath.io.boot,
+		dpath.io.dmem_datIn,
+		io.test_dm_out,
+		dmm(io.test_dm_addr >> 2))
 		 //...
 }
