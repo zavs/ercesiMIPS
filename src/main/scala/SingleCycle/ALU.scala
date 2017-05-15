@@ -74,7 +74,7 @@ object ALU9
 	def FN_SUB	= 6.U(3.W)	//110
 	def FN_SLT	= 7.U(3.W)	//111
 
-	def FN_BEQ	= FN_SUB	//011
+	def FN_BEQ	= FN_SUB	//110
 
     def isSub(cmd: UInt) = (cmd === FN_SUB) || (cmd === FN_SLT)
 }
@@ -95,7 +95,7 @@ class ALU9 extends Module{
 
 	// ADD, SUB
 	val in2_inv = Mux(isSub(io.ALUctr), ~io.in2, io.in2)
-	val in1_xor_in2 = io.in1 ^ in2_inv
+	val in1_xor_in2 = io.in1 ^ io.in2
 	val adder_out = io.in1 + in2_inv + isSub(io.ALUctr)
 
 	// SLT and BEQ comparation Output
@@ -110,7 +110,6 @@ class ALU9 extends Module{
     val logic_out = Mux(io.ALUctr === FN_OR, in1_xor_in2, 0.U) | 
     Mux(io.ALUctr === FN_OR || io.ALUctr === FN_AND, io.in1 & io.in2, 0.U)
     
-    // Output the adder result or logic result
     val out = Mux(io.ALUctr === FN_ADD || io.ALUctr === FN_SUB, 
     	adder_out, logic_out)
 

@@ -71,13 +71,7 @@ class Top extends Module() {
 
 	val clk_cnt = RegInit(0.U(32.W))
 	clk_cnt := clk_cnt + 1.U
-	// printf("Cyc=%d, pc=0x%x, Inst=0x%x, cpath.ExtOp=%x, cpath.nPC_sel=%x, boot=%d \n",
-	// 	clk_cnt,
-	// 	dpath.io.imem_addr,
-	// 	cpath.io.Inst,
-	// 	cpath.io.ctl.ExtOp,
-	// 	cpath.io.ctl.nPC_sel,
-	// 	cpath.io.boot)
+	
 	printf("Cyc=%d, pc=0x%x, Inst=0x%x, boot=%d, dmem_in = 0x%x, rd_dmm=0x%x, dmm=0x%x\n",
 		clk_cnt,
 		dpath.io.imem_addr,
