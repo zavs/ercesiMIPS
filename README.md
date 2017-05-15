@@ -9,7 +9,7 @@ Author: Danghui Wang (wangdh@nwpu.edu.cn)
 
 Date: 2017 April 9
 
-Diagrams: [ercesiMIPS wiki](http://www.ercesi.org)
+Diagrams: [ercesiMIPS wiki](http://www.ercesi.org) If you have any questions, share it with us in our [community chat room](https://gitter.im/ercesi/ercesiMIPS).
 
 This repo has been put together to demonstrate a number of simple MIPS Processors written in [Chisel](http://chisel.eecs.berkeley.edu).
 
