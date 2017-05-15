@@ -83,10 +83,19 @@ To test the ALU module with ALUtests, just input the following command in ercesi
 ```
 If you still want to monitor its verification via waveform, just run this:
 ```
-./run-bak.v.sh ALU
+./run-single.bak.v.sh ALU
 ```
 And the output `.vcd` file can be monitored in `gtkwave` program which could be install in Ubuntu-like Linux:
 ```
 sudo apt-get install gtkwave
+```
+
+To test multicycle CPU with TopTests, just input the following command in ercesiMIPS root directory.
+```
+./run-multi.sh Top
+```
+If you still want to monitor multicycle's waveform, just run this:
+```
+./run-multi.bak.v.sh Top
 ```
 
