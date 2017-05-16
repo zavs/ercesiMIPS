@@ -134,8 +134,13 @@ Additionally, a \code{valid} signal is highly recommended. It can be monitored t
 
 \subsection{Basic Logic for Test}\label{sub:testlogic}
 Please add the test logic into your top module as shown in Table \ref{tab:logic}.\\
-An example \code{Top} Module is presented below:
+The \code{Top} Module is presented below, please \textbf{DO NOT} change any code of Top module:
 \begin{scala}
+package MultiCycle
+
+import chisel3._
+import chisel3.iotesters.Driver
+//import utils.ercesiMIPSRunner
 class TopIO extends Bundle() {
 	val boot = Input(Bool()) 
 // imem and dmem interface for Tests
@@ -153,14 +158,45 @@ class TopIO extends Bundle() {
 
 	val valid			= Output(Bool())
 }
+
 class Top extends Module() {
 	val io 		= IO(new TopIO())//in chisel3, io must be wrapped in IO(...) 
-	//...
-	when (io.boot & io.test_im_wr){
-		imm(io.test_im_addr) := io.test_im_in
-		} .elsewhen (io.boot & io.test_dm_wr){
-		// please finish it
-		} //...
+	val cpath	= Module(new CtlPath())
+	val dpath 	= Module(new DatPath())
+
+	cpath.io.ctl <> dpath.io.ctl
+	cpath.io.dat <> dpath.io.dat
+	io.valid := cpath.io.valid
+	cpath.io.boot := io.boot
+
+	val imm = Mem(256, UInt(32.W))
+	val dmm = Mem(1024, UInt(32.W))
+	io.test_dm_out := 0.U
+	io.test_im_out := 0.U
+	cpath.io.Inst := 0.U
+	when (io.boot && io.test_im_wr){
+		imm(io.test_im_addr >> 2) := io.test_im_in
+		cpath.io.Inst := 0.U
+	 } 
+	when (io.boot && io.test_dm_wr){
+		dmm(io.test_dm_addr >> 2) := io.test_dm_in
+		cpath.io.Inst := 0.U
+	} 
+	when (io.boot && io.test_im_rd){
+		io.test_im_out := imm(io.test_im_addr >> 2)
+		cpath.io.Inst := 0.U
+	} 
+	when (io.boot && io.test_dm_rd){
+		io.test_dm_out := dmm(io.test_dm_addr >> 2)
+		cpath.io.Inst := 0.U
+	} 
+	when (!io.boot){
+		cpath.io.Inst := Mux(io.boot, 0.U, imm(dpath.io.imem_addr >> 2))
+		dpath.io.dmem_datOut := dmm(dpath.io.dmem_addr >> 2)
+		when (cpath.io.MemWr) {
+			dmm(dpath.io.dmem_addr >> 2) := dpath.io.dmem_datIn
+		}
+	}
 }
 \end{scala}
 \begin{table}[htp]
