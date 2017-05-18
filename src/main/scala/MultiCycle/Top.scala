@@ -62,7 +62,7 @@ class Top extends Module() {
 		cpath.io.Inst := 0.U
 	} 
 	when (!io.boot){
-		cpath.io.Inst := Mux(io.boot, 0.U, imm(dpath.io.imem_addr >> 2))
+		dpath.io.Inst := Mux(io.boot, 0.U, imm(dpath.io.imem_addr >> 2))
 		dpath.io.dmem_datOut := dmm(dpath.io.dmem_addr >> 2)
 		when (cpath.io.MemWr) {
 			dmm(dpath.io.dmem_addr >> 2) := dpath.io.dmem_datIn
