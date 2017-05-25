@@ -41,66 +41,108 @@ ERCESI}
 \section{Overview} \label{overview}%------------------------------
 The structure of Multi cyclic MIPS CPU has been introduced in CS 11007 class lecture.
 \begin{itemize}
-	\item{\textbf{MIPS 32 ISA} includes \emph{sub, add, ori, lw, sw, beq, j}, or adding \emph{addi, and, andi, or, slt} for better programming experience in assembly. All these instructions can be supported without exception detecting (overflow detecting)}
-    \item{\textbf{These instructions work in different multi cycles.} A very basic concept adopted here is that the multi cycles are controlled by FSM (Finite State Machine).}
+	\item{\textbf{MIPS32 ISA compatible} our MIPS processor is MIPS32 ISA compatible, we are planing to supports all MIPS32 standard instructions, and partially support MIPS32 privileged instructions. The instruction manual set }
+    \item{\textbf{PIOM32, Pipelined in-order MIPS (32-bit)}, in this project, we implement a 32-bit MIPS processor with in-order pipelined data-path which supports MIPS32 ISA.}
     \item{\textbf{Consisted of Data Path, Control Unit and Memory Unit.} To illustrate the typical systematic idea of computer, we recommend you design your first CPU with two separated modules, CPath and DPath, in such coding style, both blocks can also be easily verified separately. Additionally, if more complement MIPS ISA is chosen, this structure will be high efficient to be extended.}
     \item{\textbf{Chisel3 is also recommended.}}
 \end{itemize}
 
-%-----------------------------------------Specification-------------------------------------------
+%-----------------------------------------System-------------------------------------------
 
 \newpage
-\section{Specification} \label{Specification}%------------------------------
-A typical multi cyclic CPU core can also be consisted of Control Unit and Data Path unit. Although there is no big picture for a whole multi cyclic CPU, in our lecture 12, Fig. \ref{fig:multiblock} still can be figured out by composing several slides. 
-\begin{figure}[ht]
- \centering
- \includegraphics[height=5cm]{images/l2sys.pdf}
- \caption{Multi Cyclic CPU Block Diagram}
- \label{fig:multiblock}
-\end{figure}
-
-\textbf{Two Module classes are still recommended, Control Unit and Data Path Unit respectively}, as shown in following Fig. \ref{fig:modules}. To simply the design, Harvard structure is still adopted in multi cyclic CPU lab, a MIPS adaptive memory model (Princeton Structure) is mandatory in further pipeline structure.  
-\begin{figure}[ht]
- \centering
- \includegraphics[height=7cm]{images/l2modules.pdf}
- \caption{Multi Cyclic CPU Block Diagram}
- \label{fig:modules}
-\end{figure}
-In Fig. \ref{fig:modules}, a \textbf{red} marked signal bus, \code{Dec\_Inst[31:0]}, is recommend as a \code{IR} output for FSM Decode state. Almost all signals can be renamed by your self except those evaluation required singles specified in Section \ref{sub:signal}.
-%---------------------------------------Chisel 3------------------------------------------
+\section{System Structure} \label{Specification}%------------------------------
+As MISP 32 is configurable to support both Big-endian and Little-endian. Shall we support little-endian?
+%-----------------------------------------ISA-------------------------------------------
 
 \newpage
-\section{Chisel3 101} \label{chisel3}%------------------------------
-\subsection{FSM in Chisel}\label{sub:FSM}
-TBD
+\section{ISA}\label{isa}%------------------------------
+In our project, the target ISA is MIPS32, which is from Imagination Technologies, and copy rights reserved. We do not distribute MIPS32 products of benefit acquiring. The detail information of our project, please check License file. 
+
+The supported instructions of our xxxMIPS32 processor are subgroup of MIPS32 v6 which was released at 2014, listed below:
+\begin{table}[htp]
+\caption{Arithmetic Operations}\label{tab:mathinst}
+\begin{center}
+	\begin{tabular}{|l|l|l|p{6cm}|}
+	\hline
+	\textbf{Instructions} & \textbf{Code Format} & \textbf{Descriptions} & \textbf{Note}\\ \hline \hline
+	ADD RD, RS, RT 			&	000000???????????????00000100000	&	RD = RS + RT (OVERFLOW TRAP) 		& \\ \hline
+	ADDI RD, RS, CONST16 	&		&	RD = RS + CONST16± (OVERFLOW TRAP) 	& \\ \hline
+	ADDIU RD, RS, CONST16 	&		&	RD = RS + CONST16± 					& \\ \hline
+	ADDU RD, RS, RT			&		&	RD =RS +RT 							& \\ \hline
+	CLO RD, RS 				&		&	RD = COUNTLEADINGONES(RS) 			& \\ \hline
+	CLZ RD, RS 				&		&	RD = COUNTLEADINGZEROS(RS) 			& \\ \hline
+	LA RD, LABEL 			&		&	RD = ADDRESS(LABEL) 				& \\ \hline
+	LI RD, IMM32 			&		&	RD = IMM32 							& \\ \hline
+	LUI RD, CONST16 		&		&	RD = CONST16 << 16 					& \\ \hline
+	MOVE RD, RS 			&		&	RD = RS 							& \\ \hline
+	NEGU RD, RS 			&		&	RD = –RS 							& \\ \hline
+	SEBR2 RD, RS 			&		&	RD = RS7:0± 						& \\ \hline
+	SEHR2 RD, RS 			&		&	RD = RS15:0± 						& \\ \hline
+	SUB RD, RS, RT 			&		&	RD = RS – RT (OVERFLOW TRAP) 		& \\ \hline
+	SUBU RD, RS, RT 		&		&	RD =RS –RT 							& \\ \hline
+	\hline
+	\end{tabular}
+\end{center}
+\end{table}
+
+%---------------------------------------Modules------------------------------------------
+
+\newpage
+\section{Modules \& Blocks} \label{modules}%------------------------------
+\subsection{IF Instruction Fetch}\label{sub:IF}
+Instruction Fetch stage fetches instructions from front-end structure. The interfaces are define in Table \ref{tab:SignalIF}.
+\begin{table}[htp]
+\caption{ Signals Definition of IF Module}\label{tab:SignalIF}
+\begin{center}
+	\begin{tabular}{|l|l|l|p{6cm}|}
+	\hline
+	\textbf{Signal Name} & \textbf{Direction} & \textbf{Width} & \textbf{Function}\\ \hline \hline
+	rst			& Input 	& 1-bit	& Reset IF module, set to 0 in CPU regular process mode\\ \hline
+	
+	\hline
+	\end{tabular}
+\end{center}
+\end{table}
+\subsection{ID Instruction Decoder}\label{sub:ID}
+
+\newpage
+\begin{landscape}
+\begin{scala}
+package piom32
+
+abstract trait DecodeConstants
+{
+// scalastyle:off
+	  def default: List[BitPat] =
+                //           jal                                                                 renf1             fence.i
+                //   val     | jalr                                                              | renf2           |
+                //   | fp_val| | renx2                                                           | | renf3         |
+                //   | | rocc| | | renx1     s_alu1                          mem_val             | | | wfd         | 
+                //   | | | br| | | | s_alu2  |       imm    dw     alu       | mem_cmd   mem_type| | | | div       | 
+                //   | | | | | | | | |       |       |      |      |         | |           |     | | | | | wxd     | fence
+                //   | | | | | | | | |       |       |      |      |         | |           |     | | | | | | csr   | | amo
+                //   | | | | | | | | |       |       |      |      |         | |           |     | | | | | | |     | | |
+                List(N,X,X,X,X,X,X,X,A_X,    B_X,    IMM_X, DW_X,  FN_X,     N,M_X,        MT_X, X,X,X,X,X,X,CSR.X,X,X,X)
+	val table: Array[(BitPat, List[BitPat])]
+// scalastyle:on
+}
+
+\end{scala}
+In \textit{instructions.scala}, all supported instructions (including standard ISA32 instructions and selected privileged instructions) are listed as \textit{BitPat}, shown as below:
+\begin{scala}
+object Instructions {
+  def ADD                = BitPat("b000000???????????????00000100000")
+  ... ...
+ }
+\end{scala}
+All the BitPat is listed in Appendix.\ref{sub:app.Inst}
+\end{landscape}
 
 %-------------------------------Evalu Req------------------------------------------
 
 \newpage
-\section{Evaluation Requirement} \label{sec:Functions}%------------------------------
-We (or TAs) will check and evaluate your design with a pre-coded test program, in which a pseudo-random instruction queue will be feed into you instruction memory and data memory. To ensure this test works correctly, the test signal interfaces name \textbf{MUST} meets the requirements shown in Table \ref{tab:signaldef}.
-\subsection{Test Procedure}\label{sub:TestProc}
-As Operation System is still not available for this stage, the program and initial data are feed into Instruction Memory and Data Memory from the Tester program respectively. By utilizing \code{ori} instruction, the Tester program provides an alternative data memory initialization, \code{\$t = \$zero | imm16} (\code{ori, rt, \$zero Imm16}). In which, \code{\$t} stores the result of \textit{or} operation (immediate "or" zero register), i.e. the immediate is loaded into register file by \code{ori} instruction.
+\section{Compiler and OS} \label{sec:CompileOS}%------------------------------
 
-\begin{figure}[ht]
- \centering
- \includegraphics[height=7cm]{images/l1TestProc.pdf}
- \caption{Test Procedure}
- \label{fig:testproc}
-\end{figure}
-
-Fig. \ref{fig:testproc} shows the whole test procedure. In which, the designed CPU is denoted by DUT (Design under Test), the instruction is feed into Imem at the initialization stage, and the data about how program running is collected at the end.
-
-\subsection{Signals for Test mode}\label{sub:signal}
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[height=9cm]{images/l2ModulesTest.pdf}
-	\caption{Top Block Diagram for Test Mode}
-	\label{fig:moduletest}
-\end{figure}
-%\url{}
-The recommended Top block structure is shown in Fig. \ref{fig:moduletest}, which the blue marked interfaces are connected with testbench. So please define these interfaces in your top module as exactly the same as Table \ref{tab:signaldef} shown.
 
 \begin{table}[htp]
 \caption{Signals Definition for Test Mode}\label{tab:signaldef}
@@ -228,6 +270,10 @@ class Top extends Module() {
 		\end{tabular}
 	\end{center}
 \end{table}
+% -----------------------------------Appendix----------------------------------------
+\appendix
+%\renewcommand{\appendixname}{Appendix~\Alph{section}}
+\section{Supported Instructions}\label{sub:app.Inst}
 
 \end{document}
 
