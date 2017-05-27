@@ -56,16 +56,17 @@ As MISP 32 is configurable to support both Big-endian and Little-endian. Shall w
 
 \newpage
 \section{ISA}\label{isa}%------------------------------
-In our project, the target ISA is MIPS32, which is from Imagination Technologies, and copy rights reserved. We do not distribute MIPS32 products of benefit acquiring. The detail information of our project, please check License file. 
+In our project, the target ISA is MIPS32, which is from Imagination Technologies, and copy rights reserved. This project is non-profit and education oriented. Please check License file for detailed copy right information. 
 
 The supported instructions of our xxxMIPS32 processor are subgroup of MIPS32 v6 which was released at 2014, listed below:
 \begin{table}[htp]
 \caption{Arithmetic Operations}\label{tab:mathinst}
 \begin{center}
-	\begin{tabular}{|l|l|l|p{6cm}|}
+	\begin{tabular}{|l|l|l|l|}
 	\hline
+	
 	\textbf{Instructions} & \textbf{Code Format} & \textbf{Descriptions} & \textbf{Note}\\ \hline \hline
-	ADD RD, RS, RT 			&	000000???????????????00000100000	&	RD = RS + RT (OVERFLOW TRAP) 		& \\ \hline
+	\tiny ADD RD, RS, RT 			&\tiny 000000???????????????00000100000	&	\tiny RD = RS + RT (OVERFLOW TRAP) 		& \\ \hline
 	ADDI RD, RS, CONST16 	&		&	RD = RS + CONST16± (OVERFLOW TRAP) 	& \\ \hline
 	ADDIU RD, RS, CONST16 	&		&	RD = RS + CONST16± 					& \\ \hline
 	ADDU RD, RS, RT			&		&	RD =RS +RT 							& \\ \hline
@@ -84,7 +85,7 @@ The supported instructions of our xxxMIPS32 processor are subgroup of MIPS32 v6 
 	\end{tabular}
 \end{center}
 \end{table}
-
+\normalsize
 %---------------------------------------Modules------------------------------------------
 
 \newpage
