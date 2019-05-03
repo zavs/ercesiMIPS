@@ -16,12 +16,12 @@ import utils.ercesiMIPSRunner
 
 object Launcher {
   val tests = Map(
-    
-    "ALU" -> { (backendName: String) =>
-      Driver(() => new ALU(), backendName) {
-        (c) => new ALUTests(c)
-      }
-    },
+
+    // "ALU" -> { (backendName: String) =>
+    //   Driver(() => new ALU(), backendName) {
+    //     (c) => new ALUTests(c)
+    //   }
+    // },
     "Top" -> { (backendName: String) =>
       Driver(() => new Top(), backendName) {
         (c) => new TopTests(c)
@@ -47,6 +47,6 @@ object Launcher {
   )
 
   def main(args: Array[String]): Unit = {
-    ercesiMIPSRunner(tests, args) 
+    ercesiMIPSRunner(tests, args)
   }
 }

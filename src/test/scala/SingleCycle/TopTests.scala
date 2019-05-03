@@ -21,7 +21,7 @@
 //  L2:
 //  	nop
 //  	nop
-// 0x00000000 00000000 
+// 0x00000000 00000000
 // 0x00000001 34090001 ori	$t1, $zero, 1
 // 0x00000002 341107d0 ori 	$s1, $zero, 2000
 // 0x00000003 341207d4 ori 	$s2, $zero, 2004
@@ -52,10 +52,10 @@ class TopTests(c: Top) extends PeekPokeTester(c) {
 		step(1)
 	}
 
-	// Initialize the IMM content from file "inst.s", 
+	// Initialize the IMM content from file "inst.s",
 	// which could be dumped from MARS.
 	def WriteImm () = {
-		val filename = "inst2.s"
+		val filename = "inst.s"
 		var addr = 0
 		var Inst = 0
 		for (line <- Source.fromFile(filename).getLines){

@@ -6,4 +6,4 @@
 # Add several blank lines
 echo -e "\n\n\n\n\n\n\n\n"
 
-sbt "test:run-main MultiCycle.Launcher $1"
+sbt "test:runMain MultiCycle.Launcher $1"

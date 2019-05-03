@@ -13,7 +13,7 @@ import chisel3._
 import chisel3.iotesters.Driver
 //import utils.ercesiMIPSRunner
 class TopIO extends Bundle() {
-	val boot = Input(Bool()) 
+	val boot = Input(Bool())
 // imem and dmem interface for Tests
 	val test_im_wr		= Input(Bool())
 	val test_im_rd 		= Input(Bool())
@@ -31,7 +31,7 @@ class TopIO extends Bundle() {
 }
 
 class Top extends Module() {
-	val io 		= IO(new TopIO())//in chisel3, io must be wrapped in IO(...) 
+	val io 		= IO(new TopIO())//in chisel3, io must be wrapped in IO(...)
 	val cpath	= Module(new CtlPath())
 	val dpath 	= Module(new DatPath())
 
@@ -48,21 +48,21 @@ class Top extends Module() {
 	when (io.boot && io.test_im_wr){
 		imm(io.test_im_addr >> 2) := io.test_im_in
 		cpath.io.Inst := 0.U
-	 } 
+	 }
 	when (io.boot && io.test_dm_wr){
 		dmm(io.test_dm_addr >> 2) := io.test_dm_in
 		cpath.io.Inst := 0.U
-	} 
+	}
 	when (io.boot && io.test_im_rd){
 		io.test_im_out := imm(io.test_im_addr >> 2)
 		cpath.io.Inst := 0.U
-	} 
+	}
 	when (io.boot && io.test_dm_rd){
 		io.test_dm_out := dmm(io.test_dm_addr >> 2)
 		cpath.io.Inst := 0.U
-	} 
+	}
 	when (!io.boot){
-		dpath.io.Inst := Mux(io.boot, 0.U, imm(dpath.io.imem_addr >> 2))
+		cpath.io.Inst := Mux(io.boot, 0.U, imm(dpath.io.imem_addr >> 2))
 		dpath.io.dmem_datOut := dmm(dpath.io.dmem_addr >> 2)
 		when (cpath.io.MemWr) {
 			dmm(dpath.io.dmem_addr >> 2) := dpath.io.dmem_datIn
@@ -71,7 +71,7 @@ class Top extends Module() {
 
 	val clk_cnt = RegInit(0.U(32.W))
 	clk_cnt := clk_cnt + 1.U
-	
+
 	printf("Cyc=%d, pc=0x%x, Inst=0x%x, boot=%d, dmem_in = 0x%x, rd_dmm=0x%x, dmm=0x%x\n",
 		clk_cnt,
 		dpath.io.imem_addr,
